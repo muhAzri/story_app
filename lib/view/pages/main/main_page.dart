@@ -38,6 +38,7 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: _buildBottomNavigationBar(),
+      resizeToAvoidBottomInset: false,
       body: _buildBody(),
     );
   }

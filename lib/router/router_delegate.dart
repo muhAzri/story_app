@@ -21,6 +21,7 @@ class MyRouterDelegate extends RouterDelegate
 
   void signIn() {
     isSignIn = true;
+    isSignUp = false;
     isSplash = false;
     notifyListeners();
   }
@@ -56,12 +57,14 @@ class MyRouterDelegate extends RouterDelegate
   @override
   Widget build(BuildContext context) {
     return Navigator(
+      key: navigatorKey,
       pages: [
         if (isSplash)
           MaterialPage(
             key: const ValueKey("splash"),
             child: SplashPage(
               toSignInPage: signIn,
+              onAction: authenticate,
             ),
           ),
         if (isSignIn)
@@ -75,8 +78,7 @@ class MyRouterDelegate extends RouterDelegate
         if (isSignUp)
           MaterialPage(
             key: const ValueKey("sign-up"),
-            child: SignUnPage(
-              onAction: authenticate,
+            child: SignUpPage(
               toSignIn: signIn,
             ),
           ),
@@ -98,12 +100,12 @@ class MyRouterDelegate extends RouterDelegate
       ],
       onPopPage: (route, result) {
         final didPop = route.didPop(result);
+
+        unselectStory();
+
         if (!didPop) {
           return false;
         }
-
-        unselectStory();
-        isSignUp = false;
 
         return true;
       },

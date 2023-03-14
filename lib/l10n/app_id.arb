@@ -10,7 +10,7 @@
     "signInTitle": "Masuk",
     "signInButton": "Masuk",
     "signInToSignUpText": "Tidak Punya Akun? Daftar",
-    "signUnToSignInText": "Sudah Punya Akun? Login",
+    "signUpToSignInText": "Sudah Punya Akun? Login",
     "successSignUpMessage": "Berhasil mendaftar",
     "signUpTitle": "Daftar",
     "selectImageSource": "Pilih Sumber Gambar",

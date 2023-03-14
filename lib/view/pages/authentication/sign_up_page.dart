@@ -10,17 +10,16 @@ import '../../../shared/theme.dart';
 import '../../widgets/buttons.dart';
 import '../../widgets/forms.dart';
 
-class SignUnPage extends StatefulWidget {
-  final Function() onAction;
-  final Function() toSignIn;
+class SignUpPage extends StatefulWidget {
+  final VoidCallback toSignIn;
 
-  const SignUnPage({super.key, required this.onAction, required this.toSignIn});
+  const SignUpPage({Key? key, required this.toSignIn}) : super(key: key);
 
   @override
-  State<SignUnPage> createState() => _SignUnPageState();
+  State<SignUpPage> createState() => _SignUnPageState();
 }
 
-class _SignUnPageState extends State<SignUnPage> {
+class _SignUnPageState extends State<SignUpPage> {
   final TextEditingController emailController = TextEditingController(text: '');
   final TextEditingController nameController = TextEditingController(text: '');
   final TextEditingController passwordController =
@@ -38,22 +37,29 @@ class _SignUnPageState extends State<SignUnPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _buildBody(),
+      resizeToAvoidBottomInset: false,
+      body: SafeArea(
+        child: _buildBody(),
+      ),
     );
   }
 
   Widget _buildBody() {
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
-        if (state is AuthSuccess) {
+        if (state is AuthUserCreated) {
           showCustomSnackbar(
               context, AppLocalizations.of(context)!.successSignUpMessage);
-          widget.onAction();
+          Future.delayed(
+            const Duration(seconds: 1),
+            () {
+              widget.toSignIn;
+            },
+          );
         }
 
         if (state is AuthFailed) {
           showCustomSnackbar(context, state.e);
-          throw state.e;
         }
       },
       builder: (context, state) {
@@ -79,11 +85,14 @@ class _SignUnPageState extends State<SignUnPage> {
   }
 
   Widget _buildSignInTitle() {
-    return Text(
-      AppLocalizations.of(context)!.signUpTitle,
-      style: primaryTextStyle.copyWith(
-        fontSize: 18.sp,
-        fontWeight: bold,
+    return Container(
+      margin: EdgeInsets.only(top: 18.h),
+      child: Text(
+        AppLocalizations.of(context)!.signUpTitle,
+        style: primaryTextStyle.copyWith(
+          fontSize: 18.sp,
+          fontWeight: bold,
+        ),
       ),
     );
   }
@@ -142,7 +151,7 @@ class _SignUnPageState extends State<SignUnPage> {
   Widget _buildSignInButton() {
     return GestureDetector(
       onTap: () {
-        Navigator.pop(context);
+        widget.toSignIn();
       },
       child: Container(
         margin: EdgeInsets.only(top: 48.h),
@@ -150,7 +159,7 @@ class _SignUnPageState extends State<SignUnPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              AppLocalizations.of(context)!.signInToSignUpText,
+              AppLocalizations.of(context)!.signUpToSignInText,
               style: secondaryTextStyle.copyWith(
                 fontSize: 15.sp,
               ),

@@ -35,6 +35,7 @@ class _SignInPageState extends State<SignInPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: _buildBody(),
       ),
@@ -45,7 +46,8 @@ class _SignInPageState extends State<SignInPage> {
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthSuccess) {
-          showCustomSnackbar(context, AppLocalizations.of(context)!.successLoginMessage);
+          showCustomSnackbar(
+              context, AppLocalizations.of(context)!.successLoginMessage);
           widget.onAction();
         }
 
@@ -75,11 +77,14 @@ class _SignInPageState extends State<SignInPage> {
   }
 
   Widget _buildSignInTitle() {
-    return Text(
-      AppLocalizations.of(context)!.signInTitle,
-      style: primaryTextStyle.copyWith(
-        fontSize: 18.sp,
-        fontWeight: bold,
+    return Container(
+      margin: EdgeInsets.only(top: 24.h),
+      child: Text(
+        AppLocalizations.of(context)!.signInTitle,
+        style: primaryTextStyle.copyWith(
+          fontSize: 18.sp,
+          fontWeight: bold,
+        ),
       ),
     );
   }
@@ -131,8 +136,8 @@ class _SignInPageState extends State<SignInPage> {
                     ),
                   );
             } else {
-              showCustomSnackbar(context,
-                  AppLocalizations.of(context)!.formValidationMessage);
+              showCustomSnackbar(
+                  context, AppLocalizations.of(context)!.formValidationMessage);
             }
           },
         ),

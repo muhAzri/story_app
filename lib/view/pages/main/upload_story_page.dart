@@ -36,13 +36,15 @@ class _UploadStoryPageState extends State<UploadStoryPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 24.w),
-      child: Column(
-        children: [
-          _buildImage(),
-          _buildForms(),
-        ],
+    return SingleChildScrollView(
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 24.w),
+        child: Column(
+          children: [
+            _buildImage(),
+            _buildForms(),
+          ],
+        ),
       ),
     );
   }
@@ -52,35 +54,36 @@ class _UploadStoryPageState extends State<UploadStoryPage> {
       onTap: () {
         showSelectImageDialog(context);
       },
-      child: Container(
-        height: 180.h,
-        width: double.infinity,
-        margin: EdgeInsets.only(
-          top: 84.h,
-        ),
-        padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12.r),
-          border: Border.all(
-            color: grayColor,
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxHeight: 360.h),
+        child: Container(
+          width: double.infinity,
+          margin: EdgeInsets.only(
+            top: 84.h,
           ),
-        ),
-        child: selectedImage == null
-            ? Center(
-                child: Text(
-                  AppLocalizations.of(context)!.noImage,
-                  style: primaryTextStyle.copyWith(
-                    fontSize: 18.sp,
-                    fontWeight: semiBold,
+          padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12.r),
+            border: Border.all(
+              color: grayColor,
+            ),
+          ),
+          child: selectedImage == null
+              ? Center(
+                  child: Text(
+                    AppLocalizations.of(context)!.noImage,
+                    style: primaryTextStyle.copyWith(
+                      fontSize: 18.sp,
+                      fontWeight: semiBold,
+                    ),
+                  ),
+                )
+              : Image.file(
+                  File(
+                    selectedImage!.path,
                   ),
                 ),
-              )
-            : Image.file(
-                File(
-                  selectedImage!.path,
-                ),
-                fit: BoxFit.cover,
-              ),
+        ),
       ),
     );
   }
@@ -106,29 +109,33 @@ class _UploadStoryPageState extends State<UploadStoryPage> {
               hintText: AppLocalizations.of(context)!.inputYourDescription,
               controller: descriptionController,
             ),
-            Container(
-              margin: EdgeInsets.only(bottom: 24.h, top: 270.h),
-              child: CustomTextButton(
-                width: 270.w,
-                title: AppLocalizations.of(context)!.submit,
-                onTap: () {
-                  if (validate()) {
-                    context.read<StoryBloc>().add(
-                          AddStoryEvent(
-                            AddStoryFormModel(
-                              File(selectedImage!.path),
-                              descriptionController.text,
-                            ),
-                          ),
-                        );
-                  } else {
-                    showCustomSnackbar(context, 'Semua Field Harus Terisi');
-                  }
-                },
-              ),
-            )
+            _buildButton(),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildButton() {
+    return Container(
+      margin: EdgeInsets.only(top: 48.h),
+      child: CustomTextButton(
+        width: 270.w,
+        title: AppLocalizations.of(context)!.submit,
+        onTap: () {
+          if (validate()) {
+            context.read<StoryBloc>().add(
+                  AddStoryEvent(
+                    AddStoryFormModel(
+                      File(selectedImage!.path),
+                      descriptionController.text,
+                    ),
+                  ),
+                );
+          } else {
+            showCustomSnackbar(context, 'Semua Field Harus Terisi');
+          }
+        },
       ),
     );
   }

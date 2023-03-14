@@ -14,11 +14,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthRegister>((event, emit) async {
       try {
         emit(AuthLoading());
-        final UserModel user = await AuthService().register(event.formModel);
+        await AuthService().register(event.formModel);
 
-        emit(AuthSuccess(user));
+        emit(AuthUserCreated());
       } catch (e) {
         emit(AuthFailed(e.toString()));
+        emit(AuthInitial());
       }
     });
 
@@ -30,6 +31,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(AuthSuccess(user));
       } catch (e) {
         emit(AuthFailed(e.toString()));
+        emit(AuthInitial());
       }
     });
 
@@ -45,6 +47,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(AuthSuccess(user));
       } catch (e) {
         emit(AuthFailed(e.toString()));
+        emit(AuthInitial());
       }
     });
 
@@ -57,6 +60,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(AuthInitial());
       } catch (e) {
         emit(AuthFailed(e.toString()));
+        emit(AuthInitial());
       }
     });
   }

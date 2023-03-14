@@ -10,7 +10,7 @@ import '../models/user.dart';
 class AuthService {
   static const baseUrl = 'https://story-api.dicoding.dev/v1';
 
-  Future<UserModel> register(SignUpFormModel data) async {
+  Future<String> register(SignUpFormModel data) async {
     try {
       Uri url = Uri.parse('$baseUrl/register');
 
@@ -25,12 +25,7 @@ class AuthService {
       );
 
       if (res.statusCode == 201) {
-        UserModel user = await AuthService().login(SignInFormModel(
-          email: data.email,
-          password: data.password,
-        ));
-
-        return user;
+        return jsonDecode(res.body)['message'];
       } else {
         throw jsonDecode(res.body)['message'];
       }

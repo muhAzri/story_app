@@ -10,7 +10,7 @@
   "signInTitle": "Sign In",
   "signInButton": "Sign In",
   "signInToSignUpText": "Don't have an account? Sign Up",
-  "signUnToSignInText": "Already Have Account? Login",
+  "signUpToSignInText": "Already Have Account? Login",
   "successSignUpMessage": "Registration Successful",
   "signUpTitle": "Sign Up",
   "selectImageSource": "Select Image Source",
