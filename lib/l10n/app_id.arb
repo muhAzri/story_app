@@ -20,5 +20,7 @@
     "storyAdded" : "Story Berhasil Ditambahkan",
     "signOut" : "Keluar",
     "author" : "Pengarang",
-    "description" : "Deskripsi"
+    "description" : "Deskripsi",
+    "selectImageFrom" : "Pilih Gambar Dari"
+
 }

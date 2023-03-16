@@ -20,5 +20,6 @@
   "storyAdded" : "Story Added Successfuly",
   "signOut" : "Sign Out",
   "author" : "Author",
-  "description" : "Description"
+  "description" : "Description",
+  "selectImageFrom" : "Select Image From"
 }

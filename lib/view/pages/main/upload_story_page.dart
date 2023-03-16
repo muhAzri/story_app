@@ -42,6 +42,7 @@ class _UploadStoryPageState extends State<UploadStoryPage> {
         child: Column(
           children: [
             _buildImage(),
+            _buildImageSelector(),
             _buildForms(),
           ],
         ),
@@ -50,40 +51,84 @@ class _UploadStoryPageState extends State<UploadStoryPage> {
   }
 
   Widget _buildImage() {
-    return GestureDetector(
-      onTap: () {
-        showSelectImageDialog(context);
-      },
-      child: ConstrainedBox(
-        constraints: BoxConstraints(maxHeight: 360.h),
-        child: Container(
-          width: double.infinity,
-          margin: EdgeInsets.only(
-            top: 84.h,
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxHeight: 360.h),
+      child: Container(
+        width: double.infinity,
+        margin: EdgeInsets.only(
+          top: 84.h,
+        ),
+        padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12.r),
+          border: Border.all(
+            color: grayColor,
           ),
-          padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12.r),
-            border: Border.all(
-              color: grayColor,
-            ),
-          ),
-          child: selectedImage == null
-              ? Center(
-                  child: Text(
-                    AppLocalizations.of(context)!.noImage,
-                    style: primaryTextStyle.copyWith(
-                      fontSize: 18.sp,
-                      fontWeight: semiBold,
-                    ),
-                  ),
-                )
-              : Image.file(
-                  File(
-                    selectedImage!.path,
+        ),
+        child: selectedImage == null
+            ? Center(
+                child: Text(
+                  AppLocalizations.of(context)!.noImage,
+                  style: primaryTextStyle.copyWith(
+                    fontSize: 18.sp,
+                    fontWeight: semiBold,
                   ),
                 ),
-        ),
+              )
+            : Image.file(
+                File(
+                  selectedImage!.path,
+                ),
+              ),
+      ),
+    );
+  }
+
+  Widget _buildImageSelector() {
+    return Container(
+      margin: EdgeInsets.only(top: 12.h),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            margin: EdgeInsets.only(bottom: 12.h),
+            child: Text(
+              AppLocalizations.of(context)!.selectImageFrom,
+              style: secondaryTextStyle.copyWith(
+                  fontSize: 12.sp, fontWeight: semiBold),
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CustomTextButton(
+                title: 'Gallery',
+                width: 120.w,
+                onTap: () async {
+                  final image = await selectImageByGallery();
+
+                  setState(() {
+                    selectedImage = image;
+                  });
+                },
+              ),
+              SizedBox(
+                width: 6.w,
+              ),
+              CustomTextButton(
+                width: 120.w,
+                title: 'Camera',
+                onTap: () async {
+                  final image = await selectImageByCamera();
+
+                  setState(() {
+                    selectedImage = image;
+                  });
+                },
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -101,11 +146,10 @@ class _UploadStoryPageState extends State<UploadStoryPage> {
         }
       },
       child: Container(
-        margin: EdgeInsets.only(top: 24.h),
+        margin: EdgeInsets.only(top: 12.h),
         child: Column(
           children: [
             CustomTextFormField(
-              title: '',
               hintText: AppLocalizations.of(context)!.inputYourDescription,
               controller: descriptionController,
             ),
@@ -118,7 +162,7 @@ class _UploadStoryPageState extends State<UploadStoryPage> {
 
   Widget _buildButton() {
     return Container(
-      margin: EdgeInsets.only(top: 48.h),
+      margin: EdgeInsets.only(top: 24.h),
       child: CustomTextButton(
         width: 270.w,
         title: AppLocalizations.of(context)!.submit,
@@ -137,73 +181,6 @@ class _UploadStoryPageState extends State<UploadStoryPage> {
           }
         },
       ),
-    );
-  }
-
-  showSelectImageDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return SizedBox(
-          width: 375.w - 48.w,
-          child: AlertDialog(
-            backgroundColor: blackColor,
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  margin: EdgeInsets.only(top: 12.h),
-                  child: Text(
-                    AppLocalizations.of(context)!.selectImageSource,
-                    style: whiteTextStyle.copyWith(
-                      fontSize: 24.sp,
-                      fontWeight: bold,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(top: 24.h),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      CustomTextButton(
-                        title: 'Gallery',
-                        width: 120.w,
-                        onTap: () async {
-                          final image = await selectImageByGallery();
-
-                          setState(() {
-                            selectedImage = image;
-                            Navigator.of(context, rootNavigator: true)
-                                .pop(true);
-                          });
-                        },
-                      ),
-                      SizedBox(
-                        width: 6.w,
-                      ),
-                      CustomTextButton(
-                        width: 120.w,
-                        title: 'Camera',
-                        onTap: () async {
-                          final image = await selectImageByCamera();
-
-                          setState(() {
-                            selectedImage = image;
-                            Navigator.of(context, rootNavigator: true)
-                                .pop(true);
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ),
-        );
-      },
     );
   }
 }

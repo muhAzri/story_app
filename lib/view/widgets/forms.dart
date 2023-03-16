@@ -4,14 +4,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../shared/theme.dart';
 
 class CustomTextFormField extends StatelessWidget {
-  final String title;
+  final String? title;
   final String hintText;
   final bool isObsecure;
   final TextEditingController? controller;
 
   const CustomTextFormField({
     super.key,
-    required this.title,
+    this.title,
     required this.hintText,
     this.controller,
     this.isObsecure = false,
@@ -32,18 +32,22 @@ class CustomTextFormField extends StatelessWidget {
   }
 
   Widget _buildTitle() {
-    return Container(
-      margin: EdgeInsets.only(
-        top: 12.h,
-        bottom: 12.h,
-      ),
-      child: Text(
-        title,
-        style: primaryTextStyle.copyWith(
-          fontWeight: semiBold,
+    if (title != null) {
+      return Container(
+        margin: EdgeInsets.only(
+          top: 12.h,
+          bottom: 12.h,
         ),
-      ),
-    );
+        child: Text(
+          title!,
+          style: primaryTextStyle.copyWith(
+            fontWeight: semiBold,
+          ),
+        ),
+      );
+    }
+
+    return const SizedBox();
   }
 
   Widget _buildContainer() {
