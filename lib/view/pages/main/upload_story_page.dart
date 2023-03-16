@@ -175,7 +175,8 @@ class _UploadStoryPageState extends State<UploadStoryPage> {
 
                           setState(() {
                             selectedImage = image;
-                            Navigator.pop(context);
+                            Navigator.of(context, rootNavigator: true)
+                                .pop(true);
                           });
                         },
                       ),
@@ -190,7 +191,8 @@ class _UploadStoryPageState extends State<UploadStoryPage> {
 
                           setState(() {
                             selectedImage = image;
-                            Navigator.pop(context);
+                            Navigator.of(context, rootNavigator: true)
+                                .pop(true);
                           });
                         },
                       ),
