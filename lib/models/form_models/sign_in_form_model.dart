@@ -1,5 +1,10 @@
 import 'package:equatable/equatable.dart';
 
+import 'package:json_annotation/json_annotation.dart';
+
+part 'sign_in_form_model.g.dart';
+
+@JsonSerializable()
 class SignInFormModel extends Equatable {
   final String email;
   final String password;
@@ -9,16 +14,8 @@ class SignInFormModel extends Equatable {
     required this.password,
   });
 
-  Map<String, dynamic> toJson() {
-    return {
-      'email': email,
-      'password': password,
-    };
-  }
+  Map<String, dynamic> toJson() => _$SignInFormModelToJson(this);
 
   @override
-  List<Object?> get props => [
-        email,
-        password,
-      ];
+  List<Object?> get props => [email, password];
 }

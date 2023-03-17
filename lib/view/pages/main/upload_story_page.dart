@@ -36,6 +36,12 @@ class _UploadStoryPageState extends State<UploadStoryPage> {
   }
 
   @override
+  void dispose() {
+    descriptionController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
@@ -184,7 +190,7 @@ class _UploadStoryPageState extends State<UploadStoryPage> {
             context.read<StoryBloc>().add(
                   AddStoryEvent(
                     AddStoryFormModel(
-                      File(selectedImage!.path),
+                      selectedImage!,
                       descriptionController.text,
                     ),
                   ),

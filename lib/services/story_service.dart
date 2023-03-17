@@ -11,13 +11,15 @@ import '../models/story.dart';
 class StoryService {
   static const baseUrl = 'https://story-api.dicoding.dev/v1';
 
-  Future<List<StoryModel>> fetchStories() async {
+  Future<List<StoryModel>> fetchStories({int? page}) async {
     try {
+      const size = 10;
+
       final token = await AuthService().getToken();
 
       final res = await http.get(
         Uri.parse(
-          '$baseUrl/stories',
+          '$baseUrl/stories?size=$size&page=$page',
         ),
         headers: {
           "Authorization": token,
@@ -41,7 +43,7 @@ class StoryService {
     try {
       final token = await AuthService().getToken();
 
-      final compressedImage = await compressImageFile(formModel.image);
+      final compressedImage = await compressImageFile(File(formModel.image.path));
 
       final request = http.MultipartRequest(
         'POST',

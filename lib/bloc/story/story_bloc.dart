@@ -9,13 +9,17 @@ part 'story_state.dart';
 
 class StoryBloc extends Bloc<StoryEvent, StoryState> {
   StoryBloc() : super(StoryInitial()) {
+    List<StoryModel> storyGetted = [];
+
     on<FetchStoriesEvent>((event, emit) async {
       try {
         emit(StoryLoading());
 
         final stories = await StoryService().fetchStories();
 
-        emit(StorySuccess(stories));
+        storyGetted.addAll(stories);
+
+        emit(StorySuccess(storyGetted));
       } catch (e) {
         emit(StoryFailed(e.toString()));
       }
@@ -27,7 +31,9 @@ class StoryBloc extends Bloc<StoryEvent, StoryState> {
 
         final stories = await StoryService().addStory(event.formModel);
 
-        emit(StorySuccess(stories));
+        storyGetted.addAll(stories);
+
+        emit(StorySuccess(storyGetted));
       } catch (e) {
         emit(
           StoryFailed(

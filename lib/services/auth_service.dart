@@ -46,7 +46,7 @@ class AuthService {
       if (res.statusCode == 200) {
         UserModel user =
             UserModel.fromJson(jsonDecode(res.body)['loginResult']);
-        user = user.copywith(
+        user = user.copyWith(
           password: data.password,
           email: data.email,
         );
