@@ -5,28 +5,25 @@ import 'package:story_app/bloc/auth/auth_bloc.dart';
 import 'package:story_app/bloc/locale/locale_cubit.dart';
 import 'package:story_app/bloc/story/story_bloc.dart';
 import 'package:story_app/common.dart';
-import 'package:story_app/router/router_delegate.dart';
+import 'package:go_router/go_router.dart';
+import 'package:story_app/view/pages/authentication/sign_in_page.dart';
+import 'package:story_app/view/pages/authentication/sign_up_page.dart';
+import 'package:story_app/view/pages/detail_page.dart';
+import 'package:story_app/view/pages/main/main_page.dart';
+import 'package:story_app/view/pages/splash_page.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
-  late MyRouterDelegate myRouterDelegate;
-
-  @override
-  void initState() {
-    myRouterDelegate = MyRouterDelegate();
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -46,14 +43,37 @@ class _MyAppState extends State<MyApp> {
         builder: (context, child) {
           return BlocBuilder<LocalizationCubit, Locale>(
             builder: (context, locale) {
-              return MaterialApp(
+              return MaterialApp.router(
                 debugShowCheckedModeBanner: false,
                 localizationsDelegates: AppLocalizations.localizationsDelegates,
                 supportedLocales: AppLocalizations.supportedLocales,
                 locale: locale,
-                home: Router(
-                  routerDelegate: myRouterDelegate,
-                  backButtonDispatcher: RootBackButtonDispatcher(),
+                routerConfig: GoRouter(
+                  routes: [
+                    GoRoute(
+                      path: '/',
+                      builder: (context, state) => const SplashPage(),
+                    ),
+                    GoRoute(
+                      path: '/sign-in',
+                      builder: (context, state) => const SignInPage(),
+                    ),
+                    GoRoute(
+                      path: '/sign-up',
+                      builder: (context, state) => const SignUpPage(),
+                    ),
+                    GoRoute(
+                      path: '/main',
+                      builder: (context, state) => const MainPage(),
+                    ),
+                    GoRoute(
+                      path: '/detail:storyId',
+                      name: "detail",
+                      builder: (context, state) => DetailPage(
+                        storyId: state.params['storyId']!,
+                      ),
+                    ),
+                  ],
                 ),
               );
             },

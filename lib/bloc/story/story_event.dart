@@ -17,3 +17,12 @@ class AddStoryEvent extends StoryEvent {
   @override
   List<Object> get props => [formModel];
 }
+
+class GetStoryByIdEvent extends StoryEvent {
+  final String storyId;
+
+  const GetStoryByIdEvent(this.storyId);
+
+  @override
+  List<Object> get props => [storyId];
+}

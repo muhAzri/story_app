@@ -8,9 +8,9 @@ import 'package:story_app/shared/theme.dart';
 import 'package:story_app/view/widgets/buttons.dart';
 
 class ProfilePage extends StatefulWidget {
-  final Function() onSignOut;
-
-  const ProfilePage({super.key, required this.onSignOut});
+  const ProfilePage({
+    super.key,
+  });
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -74,7 +74,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthInitial) {
-          widget.onSignOut();
+          // widget.onSignOut();
         }
       },
       builder: (context, state) {

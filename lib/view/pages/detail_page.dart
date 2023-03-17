@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:story_app/bloc/story/story_bloc.dart';
 import 'package:story_app/common.dart';
 
-import '../../models/story.dart';
 import '../../shared/theme.dart';
 
 class DetailPage extends StatefulWidget {
-  final StoryModel story;
+  final String storyId;
 
-  const DetailPage({super.key, required this.story});
+  const DetailPage({super.key, required this.storyId});
 
   @override
   State<DetailPage> createState() => _DetailPageState();
@@ -25,19 +26,30 @@ class _DetailPageState extends State<DetailPage> {
   }
 
   Widget _buildBody() {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 24.w),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildStoryImage(),
-          _buildStoryInfo(),
-        ],
+    return BlocProvider(
+      create: (context) => StoryBloc()..add(GetStoryByIdEvent(widget.storyId)),
+      child: BlocBuilder<StoryBloc, StoryState>(
+        builder: (context, state) {
+          if (state is DetailStorySuccess) {
+            return Container(
+              margin: EdgeInsets.symmetric(horizontal: 24.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildStoryImage(state),
+                  _buildStoryInfo(state),
+                ],
+              ),
+            );
+          }
+
+          return const SizedBox();
+        },
       ),
     );
   }
 
-  Widget _buildStoryImage() {
+  Widget _buildStoryImage(DetailStorySuccess state) {
     Widget buildImage() {
       if (isImageNotFound) {
         return Center(
@@ -54,9 +66,7 @@ class _DetailPageState extends State<DetailPage> {
       return Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: NetworkImage(
-              widget.story.photoUrl,
-            ),
+            image: NetworkImage(state.story.photoUrl),
             onError: (exception, stackTrace) {
               setState(() {
                 isImageNotFound = !isImageNotFound;
@@ -80,14 +90,14 @@ class _DetailPageState extends State<DetailPage> {
     );
   }
 
-  Widget _buildStoryInfo() {
+  Widget _buildStoryInfo(DetailStorySuccess state) {
     return Container(
       margin: EdgeInsets.only(top: 48.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "${AppLocalizations.of(context)!.author}: ${widget.story.name}",
+            "${AppLocalizations.of(context)!.author}: ${state.story.name}",
             style: primaryTextStyle.copyWith(
               fontSize: 16.sp,
               fontWeight: semiBold,
@@ -107,7 +117,7 @@ class _DetailPageState extends State<DetailPage> {
             height: 4.h,
           ),
           Text(
-            widget.story.description,
+            state.story.description,
             style: primaryTextStyle.copyWith(
               fontWeight: medium,
             ),

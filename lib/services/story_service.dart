@@ -73,6 +73,30 @@ class StoryService {
     }
   }
 
+  Future<StoryModel> getStoryById(String storyId) async {
+    try {
+      final token = await AuthService().getToken();
+
+      final res = await http.get(
+        Uri.parse('$baseUrl/stories/$storyId'),
+        headers: {
+          'Authorization': token,
+        },
+      );
+
+      if (res.statusCode == 200) {
+        StoryModel storyDetail =
+            StoryModel.fromJson(jsonDecode(res.body)['story']);
+
+        return storyDetail;
+      }
+
+      throw jsonDecode(res.body)['message'];
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<Uint8List> compressImageFile(File imageFile) async {
     final compressedImage = await FlutterImageCompress.compressWithList(
       imageFile.readAsBytesSync(),

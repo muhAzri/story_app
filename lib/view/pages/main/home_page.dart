@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:story_app/bloc/story/story_bloc.dart';
-import 'package:story_app/models/story.dart';
 import 'package:story_app/shared/theme.dart';
 import 'package:story_app/view/widgets/story_widget.dart';
 
 class HomePage extends StatefulWidget {
-  final Function(StoryModel story) onStorySelected;
-
-  const HomePage({super.key, required this.onStorySelected});
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -36,9 +34,13 @@ class _HomePageState extends State<HomePage> {
                 children: state.stories
                     .map(
                       (story) => StoryWidget(
-                        story: story,
-                        onTap: widget.onStorySelected,
-                      ),
+                          story: story,
+                          onTap: () {
+                            context.pushNamed(
+                              'detail',
+                              params: {'storyId': story.id},
+                            );
+                          }),
                     )
                     .toList(),
               );

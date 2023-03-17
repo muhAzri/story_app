@@ -5,7 +5,7 @@ import 'package:story_app/shared/theme.dart';
 
 class StoryWidget extends StatefulWidget {
   final StoryModel story;
-  final Function(StoryModel story) onTap;
+  final VoidCallback? onTap;
 
   const StoryWidget({
     super.key,
@@ -23,9 +23,7 @@ class _StoryWidgetState extends State<StoryWidget> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        widget.onTap(widget.story);
-      },
+      onTap: widget.onTap,
       child: Container(
         margin: EdgeInsets.only(bottom: 12.h),
         padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),

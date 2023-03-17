@@ -1,4 +1,3 @@
-import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -17,10 +16,12 @@ Future<XFile?> selectImageByCamera() async {
 }
 
 void showCustomSnackbar(BuildContext context, String message) {
-  Flushbar(
-    message: message,
-    flushbarPosition: FlushbarPosition.TOP,
-    backgroundColor: Colors.red,
-    duration: const Duration(seconds: 3),
-  ).show(context);
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(message),
+      duration: const Duration(seconds: 3),
+      backgroundColor: Colors.red,
+      behavior: SnackBarBehavior.floating,
+    ),
+  );
 }

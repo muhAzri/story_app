@@ -36,5 +36,17 @@ class StoryBloc extends Bloc<StoryEvent, StoryState> {
         );
       }
     });
+
+    on<GetStoryByIdEvent>((event, emit) async {
+      try {
+        emit(StoryLoading());
+
+        final story = await StoryService().getStoryById(event.storyId);
+
+        emit(DetailStorySuccess(story));
+      } catch (e) {
+        emit(StoryFailed(e.toString()));
+      }
+    });
   }
 }

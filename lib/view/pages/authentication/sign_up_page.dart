@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:story_app/bloc/auth/auth_bloc.dart';
 import 'package:story_app/common.dart';
 import 'package:story_app/models/form_models/sign_up_form_model.dart';
@@ -11,9 +12,9 @@ import '../../widgets/buttons.dart';
 import '../../widgets/forms.dart';
 
 class SignUpPage extends StatefulWidget {
-  final VoidCallback toSignIn;
-
-  const SignUpPage({Key? key, required this.toSignIn}) : super(key: key);
+  const SignUpPage({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<SignUpPage> createState() => _SignUnPageState();
@@ -48,14 +49,10 @@ class _SignUnPageState extends State<SignUpPage> {
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthUserCreated) {
+          context.pop();
+
           showCustomSnackbar(
               context, AppLocalizations.of(context)!.successSignUpMessage);
-          Future.delayed(
-            const Duration(seconds: 1),
-            () {
-              widget.toSignIn;
-            },
-          );
         }
 
         if (state is AuthFailed) {
@@ -151,7 +148,7 @@ class _SignUnPageState extends State<SignUpPage> {
   Widget _buildSignInButton() {
     return GestureDetector(
       onTap: () {
-        widget.toSignIn();
+        context.pop();
       },
       child: Container(
         margin: EdgeInsets.only(top: 48.h),

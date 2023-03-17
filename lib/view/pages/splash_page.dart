@@ -1,17 +1,16 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:story_app/bloc/auth/auth_bloc.dart';
 
 class SplashPage extends StatefulWidget {
-  final VoidCallback onAction;
+  final VoidCallback? onAction;
 
-  final Function() toSignInPage;
+  final Function()? toSignInPage;
 
-  const SplashPage(
-      {super.key, required this.toSignInPage, required this.onAction});
+  const SplashPage({super.key, this.toSignInPage, this.onAction});
 
   @override
   State<SplashPage> createState() => _SplashPageState();
@@ -30,11 +29,11 @@ class _SplashPageState extends State<SplashPage> {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthSuccess) {
-          widget.onAction();
+          context.go('/main');
         }
 
         if (state is AuthFailed) {
-          widget.toSignInPage();
+          context.go('/sign-in');
         }
       },
       child: Scaffold(

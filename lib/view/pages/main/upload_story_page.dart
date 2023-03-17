@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -51,6 +52,32 @@ class _UploadStoryPageState extends State<UploadStoryPage> {
   }
 
   Widget _buildImage() {
+    Widget imageSelection() {
+      if (selectedImage == null) {
+        return Center(
+          child: Text(
+            AppLocalizations.of(context)!.noImage,
+            style: primaryTextStyle.copyWith(
+              fontSize: 18.sp,
+              fontWeight: semiBold,
+            ),
+          ),
+        );
+      }
+
+      if (kIsWeb) {
+        return Image.network(
+          Uri.file(selectedImage!.path).toString(),
+        );
+      }
+
+      return Image.file(
+        File(
+          selectedImage!.path,
+        ),
+      );
+    }
+
     return ConstrainedBox(
       constraints: BoxConstraints(maxHeight: 360.h),
       child: Container(
@@ -65,21 +92,7 @@ class _UploadStoryPageState extends State<UploadStoryPage> {
             color: grayColor,
           ),
         ),
-        child: selectedImage == null
-            ? Center(
-                child: Text(
-                  AppLocalizations.of(context)!.noImage,
-                  style: primaryTextStyle.copyWith(
-                    fontSize: 18.sp,
-                    fontWeight: semiBold,
-                  ),
-                ),
-              )
-            : Image.file(
-                File(
-                  selectedImage!.path,
-                ),
-              ),
+        child: imageSelection(),
       ),
     );
   }

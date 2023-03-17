@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:story_app/common.dart';
 import 'package:story_app/models/form_models/sign_in_form_model.dart';
 import 'package:story_app/shared/method.dart';
@@ -11,10 +12,10 @@ import '../../../bloc/auth/auth_bloc.dart';
 import '../../widgets/forms.dart';
 
 class SignInPage extends StatefulWidget {
-  final VoidCallback onAction;
-  final Function() toSignUp;
+  final VoidCallback? onAction;
+  final Function()? toSignUp;
 
-  const SignInPage({super.key, required this.onAction, required this.toSignUp});
+  const SignInPage({super.key, this.onAction, this.toSignUp});
 
   @override
   State<SignInPage> createState() => _SignInPageState();
@@ -48,7 +49,7 @@ class _SignInPageState extends State<SignInPage> {
         if (state is AuthSuccess) {
           showCustomSnackbar(
               context, AppLocalizations.of(context)!.successLoginMessage);
-          widget.onAction();
+          context.go('/main');
         }
 
         if (state is AuthFailed) {
@@ -114,7 +115,7 @@ class _SignInPageState extends State<SignInPage> {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthSuccess) {
-          widget.onAction;
+          // widget.onAction;
         }
 
         if (state is AuthFailed) {
@@ -147,7 +148,9 @@ class _SignInPageState extends State<SignInPage> {
 
   Widget _buildSignUpButton() {
     return GestureDetector(
-      onTap: widget.toSignUp,
+      onTap: () {
+        context.push('/sign-up');
+      },
       child: Container(
         margin: EdgeInsets.only(top: 48.h),
         child: Row(

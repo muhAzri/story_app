@@ -28,3 +28,12 @@ class StorySuccess extends StoryState {
   @override
   List<Object> get props => [stories];
 }
+
+class DetailStorySuccess extends StoryState {
+  final StoryModel story;
+
+  const DetailStorySuccess(this.story);
+
+  @override
+  List<Object> get props => [story];
+}
