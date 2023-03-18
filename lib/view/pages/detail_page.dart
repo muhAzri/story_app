@@ -31,6 +31,7 @@ class _DetailPageState extends State<DetailPage> {
       child: BlocBuilder<StoryBloc, StoryState>(
         builder: (context, state) {
           if (state is DetailStorySuccess) {
+            print(state.story);
             return Container(
               margin: EdgeInsets.symmetric(horizontal: 24.w),
               child: Column(
@@ -38,6 +39,9 @@ class _DetailPageState extends State<DetailPage> {
                 children: [
                   _buildStoryImage(state),
                   _buildStoryInfo(state),
+                  if (state.story.longitude != null &&
+                      state.story.latitude != null)
+                    _buildLocation(state),
                 ],
               ),
             );
@@ -124,6 +128,33 @@ class _DetailPageState extends State<DetailPage> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildLocation(DetailStorySuccess state) {
+    return Column(
+      children: [
+        SizedBox(
+          height: 12.h,
+        ),
+        Text(
+          state.story.latitude.toString(),
+          style: primaryTextStyle.copyWith(
+            fontSize: 16.sp,
+            fontWeight: semiBold,
+          ),
+        ),
+        SizedBox(
+          height: 12.h,
+        ),
+        Text(
+          state.story.longitude.toString(),
+          style: primaryTextStyle.copyWith(
+            fontSize: 16.sp,
+            fontWeight: semiBold,
+          ),
+        ),
+      ],
     );
   }
 }

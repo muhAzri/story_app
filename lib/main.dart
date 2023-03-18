@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_config/flutter_config.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:story_app/bloc/auth/auth_bloc.dart';
 import 'package:story_app/bloc/locale/locale_cubit.dart';
@@ -12,7 +13,9 @@ import 'package:story_app/view/pages/detail_page.dart';
 import 'package:story_app/view/pages/main/main_page.dart';
 import 'package:story_app/view/pages/splash_page.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await FlutterConfig.loadEnvVariables();
   runApp(const MyApp());
 }
 

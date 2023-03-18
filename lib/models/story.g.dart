@@ -11,8 +11,8 @@ StoryModel _$StoryModelFromJson(Map<String, dynamic> json) => StoryModel(
       name: json['name'] as String?,
       description: json['description'] as String,
       photoUrl: json['photoUrl'] as String,
-      latitude: (json['latitude'] as num?)?.toDouble(),
-      longitude: (json['longitude'] as num?)?.toDouble(),
+      latitude: (json['lat'] as num?)?.toDouble(),
+      longitude: (json['lon'] as num?)?.toDouble(),
     );
 
 Map<String, dynamic> _$StoryModelToJson(StoryModel instance) =>
@@ -21,6 +21,6 @@ Map<String, dynamic> _$StoryModelToJson(StoryModel instance) =>
       'name': instance.name,
       'description': instance.description,
       'photoUrl': instance.photoUrl,
-      'latitude': instance.latitude,
-      'longitude': instance.longitude,
+      'lat': instance.latitude,
+      'lon': instance.longitude,
     };
