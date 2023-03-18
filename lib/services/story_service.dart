@@ -11,9 +11,11 @@ import '../models/story.dart';
 class StoryService {
   static const baseUrl = 'https://story-api.dicoding.dev/v1';
 
-  Future<List<StoryModel>> fetchStories({int? page}) async {
+  Future<List<StoryModel>> fetchStories([int? page = 1, int size = 10]) async {
     try {
-      const size = 10;
+      if (page == null) {
+        return [];
+      }
 
       final token = await AuthService().getToken();
 
@@ -43,7 +45,8 @@ class StoryService {
     try {
       final token = await AuthService().getToken();
 
-      final compressedImage = await compressImageFile(File(formModel.image.path));
+      final compressedImage =
+          await compressImageFile(File(formModel.image.path));
 
       final request = http.MultipartRequest(
         'POST',
@@ -65,7 +68,7 @@ class StoryService {
       final response = await http.Response.fromStream(streamedResponse);
 
       if (response.statusCode == 201) {
-        final stories = await fetchStories();
+        final stories = await fetchStories(1, 10);
         return stories;
       }
 

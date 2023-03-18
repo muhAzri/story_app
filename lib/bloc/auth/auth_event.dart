@@ -25,6 +25,6 @@ class AuthLogin extends AuthEvent {
   List<Object> get props => [formModel];
 }
 
-class AuthSignOut extends AuthEvent{}
+class AuthSignOut extends AuthEvent {}
 
 class AuthGetCurrentUser extends AuthEvent {}

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:story_app/bloc/auth/auth_bloc.dart';
 import 'package:story_app/bloc/locale/locale_cubit.dart';
 import 'package:story_app/common.dart';
@@ -74,7 +75,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthInitial) {
-          // widget.onSignOut();
+          context.go('/sign-in');
         }
       },
       builder: (context, state) {

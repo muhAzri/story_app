@@ -9,17 +9,27 @@ part 'story_state.dart';
 
 class StoryBloc extends Bloc<StoryEvent, StoryState> {
   StoryBloc() : super(StoryInitial()) {
+    int? pageItems = 1;
+    int sizeItems = 10;
+
     List<StoryModel> storyGetted = [];
 
     on<FetchStoriesEvent>((event, emit) async {
       try {
-        emit(StoryLoading());
+        if (pageItems == 1) {
+          emit(StoryLoading());
+        }
 
-        final stories = await StoryService().fetchStories();
+        final stories = await StoryService().fetchStories(pageItems, sizeItems);
+
+        if (stories.length < sizeItems) {
+          pageItems = null;
+        } else {
+          pageItems = pageItems! + 1;
+        }
 
         storyGetted.addAll(stories);
-
-        emit(StorySuccess(storyGetted));
+        emit(StorySuccess(storyGetted, pageItems, sizeItems));
       } catch (e) {
         emit(StoryFailed(e.toString()));
       }
@@ -31,9 +41,10 @@ class StoryBloc extends Bloc<StoryEvent, StoryState> {
 
         final stories = await StoryService().addStory(event.formModel);
 
+        storyGetted.clear();
         storyGetted.addAll(stories);
 
-        emit(StorySuccess(storyGetted));
+        emit(StorySuccess(storyGetted, pageItems, sizeItems));
       } catch (e) {
         emit(
           StoryFailed(

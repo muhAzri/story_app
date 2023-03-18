@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:story_app/bloc/story/story_bloc.dart';
-import 'package:story_app/shared/theme.dart';
+import 'package:story_app/shared/method.dart';
 import 'package:story_app/view/widgets/story_widget.dart';
 
 class HomePage extends StatefulWidget {
@@ -14,8 +14,31 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final ScrollController _scrollController = ScrollController();
+
   Future<void> _refresh() async {
-    setState(() {});
+    context.read<StoryBloc>().add(FetchStoriesEvent());
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    _scrollController.addListener(_onScroll);
+    context.read<StoryBloc>().add(FetchStoriesEvent());
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
+      context.read<StoryBloc>().add(FetchStoriesEvent());
+    }
   }
 
   @override
@@ -23,45 +46,48 @@ class _HomePageState extends State<HomePage> {
     return RefreshIndicator(
       onRefresh: _refresh,
       child: SafeArea(
-        child: BlocBuilder<StoryBloc, StoryState>(
+        child: BlocConsumer<StoryBloc, StoryState>(
+          listener: (context, state) {
+            if (state is StoryFailed) {
+              showCustomSnackbar(context, state.e);
+            }
+          },
           builder: (context, state) {
             if (state is StorySuccess) {
-              return ListView(
+              final stories = state.stories;
+              return ListView.builder(
                 padding: EdgeInsets.symmetric(
                   horizontal: 24.w,
                   vertical: 24.h,
                 ),
-                children: state.stories
-                    .map(
-                      (story) => StoryWidget(
-                          story: story,
-                          onTap: () {
-                            context.pushNamed(
-                              'detail',
-                              params: {'storyId': story.id},
-                            );
-                          }),
-                    )
-                    .toList(),
+                controller: _scrollController,
+                itemCount: stories.length + (state.pageItems != null ? 1 : 0),
+                itemBuilder: (BuildContext context, int index) {
+                  if (index == stories.length && state.pageItems != null) {
+                    return const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(8),
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  }
+
+                  return StoryWidget(
+                    story: stories[index],
+                    onTap: () {
+                      context.pushNamed(
+                        'detail',
+                        params: {'storyId': stories[index].id},
+                      );
+                    },
+                  );
+                },
               );
             }
 
             if (state is StoryLoading) {
               return const Center(
                 child: CircularProgressIndicator(),
-              );
-            }
-
-            if (state is StoryFailed) {
-              return Center(
-                child: Text(
-                  state.e,
-                  style: primaryTextStyle.copyWith(
-                    fontSize: 18.sp,
-                    fontWeight: bold,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
               );
             }
 

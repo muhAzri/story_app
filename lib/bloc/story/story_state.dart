@@ -4,7 +4,7 @@ abstract class StoryState extends Equatable {
   const StoryState();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class StoryInitial extends StoryState {}
@@ -22,11 +22,17 @@ class StoryFailed extends StoryState {
 
 class StorySuccess extends StoryState {
   final List<StoryModel> stories;
+  final int? pageItems;
+  final int sizeItems;
 
-  const StorySuccess(this.stories);
+  const StorySuccess(this.stories, this.pageItems, this.sizeItems);
 
   @override
-  List<Object> get props => [stories];
+  List<Object?> get props => [stories, pageItems, sizeItems];
+
+  int get itemCount {
+    return stories.length + (pageItems != null ? 1 : 0);
+  }
 }
 
 class DetailStorySuccess extends StoryState {

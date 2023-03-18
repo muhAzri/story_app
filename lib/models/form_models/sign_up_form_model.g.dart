@@ -6,8 +6,6 @@ part of 'sign_up_form_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-
-
 Map<String, dynamic> _$SignUpFormModelToJson(SignUpFormModel instance) =>
     <String, dynamic>{
       'email': instance.email,

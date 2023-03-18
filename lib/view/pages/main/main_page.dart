@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:story_app/bloc/story/story_bloc.dart';
 import 'package:story_app/shared/theme.dart';
 import 'package:story_app/view/pages/main/home_page.dart';
 import 'package:story_app/view/pages/main/profile_page.dart';
 import 'package:story_app/view/pages/main/upload_story_page.dart';
 
 class MainPage extends StatefulWidget {
-
-  const MainPage({super.key, });
+  const MainPage({
+    super.key,
+  });
 
   @override
   State<MainPage> createState() => _MainPageState();
@@ -17,12 +16,6 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   int currentIndex = 0;
-
-  @override
-  void initState() {
-    context.read<StoryBloc>().add(FetchStoriesEvent());
-    super.initState();
-  }
 
   void onUploadSuccess() {
     setState(() {
@@ -42,19 +35,16 @@ class _MainPageState extends State<MainPage> {
   Widget _buildBody() {
     switch (currentIndex) {
       case 0:
-        return const HomePage(
-        );
+        return const HomePage();
       case 1:
         return UploadStoryPage(
           uploadSuccess: onUploadSuccess,
         );
       case 2:
-        return const ProfilePage(
-        );
+        return const ProfilePage();
 
       default:
-        return const HomePage(
-        );
+        return const HomePage();
     }
   }
 

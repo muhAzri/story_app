@@ -14,7 +14,6 @@ Color blackColor = const Color(0xff1B1B1A);
 Color whiteColor = Colors.white;
 Color yellowColor = const Color(0xffE8FB7A);
 
-
 TextStyle primaryTextStyle = GoogleFonts.inter(
   color: blackColor,
   fontSize: 14.sp,
