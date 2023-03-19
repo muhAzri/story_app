@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:story_app/bloc/auth/auth_bloc.dart';
 import 'package:story_app/bloc/locale/locale_cubit.dart';
 import 'package:story_app/bloc/story/story_bloc.dart';
@@ -29,6 +30,52 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  GoRouter _router() {
+    return GoRouter(
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (context, state) => const SplashPage(),
+        ),
+        GoRoute(
+          path: '/sign-in',
+          builder: (context, state) => const SignInPage(),
+        ),
+        GoRoute(
+          path: '/sign-up',
+          builder: (context, state) => const SignUpPage(),
+        ),
+        GoRoute(
+          path: '/main',
+          builder: (context, state) => const MainPage(),
+        ),
+        GoRoute(
+          path: '/upload-story',
+          name: 'upload-story',
+          builder: (context, state) {
+            LatLng? latLng = state.extra as LatLng?;
+
+            return UploadStoryPage(
+              latestLatLng: latLng,
+            );
+          },
+        ),
+        GoRoute(
+          path: '/select-location',
+          name: 'select-location',
+          builder: (context, state) => const SelectLocationPage(),
+        ),
+        GoRoute(
+          path: '/detail:storyId',
+          name: "detail",
+          builder: (context, state) => DetailPage(
+            storyId: state.params['storyId']!,
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -53,46 +100,7 @@ class _MyAppState extends State<MyApp> {
                 localizationsDelegates: AppLocalizations.localizationsDelegates,
                 supportedLocales: AppLocalizations.supportedLocales,
                 locale: locale,
-                routerConfig: GoRouter(
-                  routes: [
-                    GoRoute(
-                      path: '/',
-                      builder: (context, state) => const SplashPage(),
-                    ),
-                    GoRoute(
-                      path: '/sign-in',
-                      builder: (context, state) => const SignInPage(),
-                    ),
-                    GoRoute(
-                      path: '/sign-up',
-                      builder: (context, state) => const SignUpPage(),
-                    ),
-                    GoRoute(
-                      path: '/main',
-                      builder: (context, state) => const MainPage(),
-                    ),
-                    GoRoute(
-                      path: '/upload-story',
-                      name: 'upload-story',
-                      builder: (context, state) => const UploadStoryPage(),
-                      routes: [
-                        GoRoute(
-                          path: 'select-location',
-                          name: 'select-location',
-                          builder: (context, state) =>
-                              const SelectLocationPage(),
-                        ),
-                      ],
-                    ),
-                    GoRoute(
-                      path: '/detail:storyId',
-                      name: "detail",
-                      builder: (context, state) => DetailPage(
-                        storyId: state.params['storyId']!,
-                      ),
-                    ),
-                  ],
-                ),
+                routerConfig: _router(),
               );
             },
           );

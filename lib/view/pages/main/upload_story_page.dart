@@ -13,7 +13,7 @@ import 'package:go_router/go_router.dart';
 import 'package:story_app/models/form_models/add_story_form_model.dart';
 import 'package:story_app/shared/method.dart';
 import 'package:story_app/shared/theme.dart';
-import 'package:story_app/view/pages/select_location_page.dart';
+
 import 'package:story_app/view/widgets/buttons.dart';
 import 'package:story_app/view/widgets/forms.dart';
 
@@ -40,6 +40,16 @@ class _UploadStoryPageState extends State<UploadStoryPage> {
       return false;
     }
     return true;
+  }
+
+  @override
+  void initState() {
+    if (widget.latestLatLng != null) {
+      setState(() {
+        latestLatLng = widget.latestLatLng;
+      });
+    }
+    super.initState();
   }
 
   @override
@@ -185,16 +195,14 @@ class _UploadStoryPageState extends State<UploadStoryPage> {
             CustomTextButton(
               title: 'Select Location',
               onTap: () async {
-                final LatLng? result = await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const SelectLocationPage(),
-                  ),
-                );
+                // final LatLng? result = await Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //     builder: (context) => const SelectLocationPage(),
+                //   ),
+                // );
 
-                setState(() {
-                  latestLatLng = result;
-                });
+                context.pushReplacement('/select-location');
               },
             ),
             _buildButton(),
@@ -218,6 +226,8 @@ class _UploadStoryPageState extends State<UploadStoryPage> {
               lattitude: latestLatLng != null ? latestLatLng!.latitude : null,
               longtitude: latestLatLng != null ? latestLatLng!.longitude : null,
             );
+
+            print(formModel);
 
             context.read<StoryBloc>().add(
                   AddStoryEvent(formModel),

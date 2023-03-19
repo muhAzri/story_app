@@ -63,8 +63,8 @@ class StoryService {
       );
 
       request.fields['description'] = formModel.description;
-      request.fields['latitude'] = formModel.lattitude?.toString() ?? '';
-      request.fields['longitude'] = formModel.longtitude?.toString() ?? '';
+      request.fields['lat'] = formModel.lattitude?.toString() ?? '';
+      request.fields['lon'] = formModel.longtitude?.toString() ?? '';
 
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);

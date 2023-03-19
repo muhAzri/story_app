@@ -77,7 +77,10 @@ class _SelectLocationPageState extends State<SelectLocationPage> {
                   width: 75.w,
                   title: "OK",
                   onTap: () {
-                    context.pop(latestLatLng);
+                    context.pushReplacement(
+                      '/upload-story',
+                      extra: latestLatLng,
+                    );
                   },
                 ),
               ),
