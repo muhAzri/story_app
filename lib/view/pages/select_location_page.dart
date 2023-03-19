@@ -8,7 +8,9 @@ import 'package:story_app/shared/theme.dart';
 import 'package:story_app/view/widgets/buttons.dart';
 
 class SelectLocationPage extends StatefulWidget {
-  const SelectLocationPage({super.key});
+  final Map<String, dynamic>? addtionalData;
+
+  const SelectLocationPage({super.key, this.addtionalData});
 
   @override
   State<SelectLocationPage> createState() => _SelectLocationPageState();
@@ -77,9 +79,15 @@ class _SelectLocationPageState extends State<SelectLocationPage> {
                   width: 75.w,
                   title: "OK",
                   onTap: () {
+                    final latestLatLngMap = {"latestLatLng": latestLatLng};
+
+                    final newAdditionalData =
+                        Map<String, dynamic>.from(widget.addtionalData ?? {})
+                          ..addAll(latestLatLngMap);
+
                     context.pushReplacement(
                       '/upload-story',
-                      extra: latestLatLng,
+                      extra: newAdditionalData,
                     );
                   },
                 ),

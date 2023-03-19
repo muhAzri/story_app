@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:story_app/bloc/auth/auth_bloc.dart';
 import 'package:story_app/bloc/locale/locale_cubit.dart';
 import 'package:story_app/bloc/story/story_bloc.dart';
@@ -53,17 +52,23 @@ class _MyAppState extends State<MyApp> {
           path: '/upload-story',
           name: 'upload-story',
           builder: (context, state) {
-            LatLng? latLng = state.extra as LatLng?;
+            Map<String,dynamic>? addtionalDataMap = state.extra as Map<String,dynamic>?;
 
             return UploadStoryPage(
-              latestLatLng: latLng,
+              addtionalData: addtionalDataMap,
             );
           },
         ),
         GoRoute(
           path: '/select-location',
           name: 'select-location',
-          builder: (context, state) => const SelectLocationPage(),
+          builder: (context, state) {
+            Map<String,dynamic>? addtionalDataMap = state.extra as Map<String,dynamic>?;
+
+            return SelectLocationPage(
+              addtionalData: addtionalDataMap,
+            );
+          }
         ),
         GoRoute(
           path: '/detail:storyId',

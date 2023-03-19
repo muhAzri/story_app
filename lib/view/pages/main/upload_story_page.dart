@@ -18,11 +18,11 @@ import 'package:story_app/view/widgets/buttons.dart';
 import 'package:story_app/view/widgets/forms.dart';
 
 class UploadStoryPage extends StatefulWidget {
-  final LatLng? latestLatLng;
+  final Map<String, dynamic>? addtionalData;
 
   const UploadStoryPage({
     super.key,
-    this.latestLatLng,
+    this.addtionalData,
   });
 
   @override
@@ -44,9 +44,11 @@ class _UploadStoryPageState extends State<UploadStoryPage> {
 
   @override
   void initState() {
-    if (widget.latestLatLng != null) {
+    if (widget.addtionalData != null) {
       setState(() {
-        latestLatLng = widget.latestLatLng;
+        latestLatLng = widget.addtionalData!['latestLatLng'];
+        selectedImage = widget.addtionalData!['selectedImage'];
+        descriptionController.text = widget.addtionalData!['description'];
       });
     }
     super.initState();
@@ -195,14 +197,12 @@ class _UploadStoryPageState extends State<UploadStoryPage> {
             CustomTextButton(
               title: 'Select Location',
               onTap: () async {
-                // final LatLng? result = await Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //     builder: (context) => const SelectLocationPage(),
-                //   ),
-                // );
+                final Map<String, dynamic> data = {
+                  "selectedImage": selectedImage,
+                  "description": descriptionController.text
+                };
 
-                context.pushReplacement('/select-location');
+                context.pushReplacement('/select-location', extra: data);
               },
             ),
             _buildButton(),
@@ -226,8 +226,6 @@ class _UploadStoryPageState extends State<UploadStoryPage> {
               lattitude: latestLatLng != null ? latestLatLng!.latitude : null,
               longtitude: latestLatLng != null ? latestLatLng!.longitude : null,
             );
-
-            print(formModel);
 
             context.read<StoryBloc>().add(
                   AddStoryEvent(formModel),
