@@ -164,7 +164,7 @@ class _DetailPageState extends State<DetailPage> {
         Container(
           margin: EdgeInsets.only(top: 12.h),
           child: Text(
-            'Address',
+            AppLocalizations.of(context)!.address,
             style: primaryTextStyle.copyWith(
               fontWeight: semiBold,
               fontSize: 16.sp,

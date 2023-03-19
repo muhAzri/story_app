@@ -21,6 +21,9 @@
     "signOut" : "Keluar",
     "author" : "Pengarang",
     "description" : "Deskripsi",
-    "selectImageFrom" : "Pilih Gambar Dari"
+    "selectImageFrom" : "Pilih Gambar Dari",
+    "selectLocation" : "Pilih Lokasi",
+    "address" : "Alamat"
+
 
 }

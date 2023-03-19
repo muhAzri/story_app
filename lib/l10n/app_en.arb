@@ -21,5 +21,8 @@
   "signOut" : "Sign Out",
   "author" : "Author",
   "description" : "Description",
-  "selectImageFrom" : "Select Image From"
+  "selectImageFrom" : "Select Image From",
+  "selectLocation" : "Select Location",
+  "address" : "Address"
+
 }

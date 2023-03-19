@@ -195,7 +195,7 @@ class _UploadStoryPageState extends State<UploadStoryPage> {
             ),
             SizedBox(height: 12.h),
             CustomTextButton(
-              title: 'Select Location',
+              title: AppLocalizations.of(context)!.selectLocation,
               onTap: () async {
                 final Map<String, dynamic> data = {
                   "selectedImage": selectedImage,
@@ -231,7 +231,7 @@ class _UploadStoryPageState extends State<UploadStoryPage> {
                   AddStoryEvent(formModel),
                 );
           } else {
-            showCustomSnackbar(context, 'Semua Field Harus Terisi');
+            showCustomSnackbar(context, AppLocalizations.of(context)!.formValidationMessage,);
           }
         },
       ),
