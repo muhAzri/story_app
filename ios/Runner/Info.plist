@@ -53,5 +53,15 @@
 	<string> This app requires access to the camera</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string> This app requires access to the microphone</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>The app needs user's location permission</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>The app needs user's location permission</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>The app needs location service permission</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>location</string>
+	</array>
 </dict>
 </plist>

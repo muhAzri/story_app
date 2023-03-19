@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:story_app/bloc/story/story_bloc.dart';
 import 'package:story_app/common.dart';
@@ -15,9 +16,9 @@ import 'package:story_app/view/widgets/buttons.dart';
 import 'package:story_app/view/widgets/forms.dart';
 
 class UploadStoryPage extends StatefulWidget {
-  final Function() uploadSuccess;
-
-  const UploadStoryPage({super.key, required this.uploadSuccess});
+  const UploadStoryPage({
+    super.key,
+  });
 
   @override
   State<UploadStoryPage> createState() => _UploadStoryPageState();
@@ -43,15 +44,17 @@ class _UploadStoryPageState extends State<UploadStoryPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 24.w),
-        child: Column(
-          children: [
-            _buildImage(),
-            _buildImageSelector(),
-            _buildForms(),
-          ],
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Container(
+          margin: EdgeInsets.symmetric(horizontal: 24.w),
+          child: Column(
+            children: [
+              _buildImage(),
+              _buildImageSelector(),
+              _buildForms(),
+            ],
+          ),
         ),
       ),
     );
@@ -157,7 +160,7 @@ class _UploadStoryPageState extends State<UploadStoryPage> {
       listener: (context, state) {
         if (state is StorySuccess) {
           showCustomSnackbar(context, AppLocalizations.of(context)!.storyAdded);
-          widget.uploadSuccess();
+          context.pop();
         }
 
         if (state is StoryFailed) {

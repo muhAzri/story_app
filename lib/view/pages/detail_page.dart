@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:story_app/bloc/story/story_bloc.dart';
 import 'package:story_app/common.dart';
+import 'package:geocoding/geocoding.dart' as geo;
 
 import '../../shared/theme.dart';
 
@@ -16,7 +18,9 @@ class DetailPage extends StatefulWidget {
 }
 
 class _DetailPageState extends State<DetailPage> {
+  late final Set<Marker> markers = {};
   bool isImageNotFound = false;
+  geo.Placemark? placemark;
 
   @override
   Widget build(BuildContext context) {
@@ -31,17 +35,15 @@ class _DetailPageState extends State<DetailPage> {
       child: BlocBuilder<StoryBloc, StoryState>(
         builder: (context, state) {
           if (state is DetailStorySuccess) {
-            print(state.story);
             return Container(
               margin: EdgeInsets.symmetric(horizontal: 24.w),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: ListView(
                 children: [
                   _buildStoryImage(state),
                   _buildStoryInfo(state),
-                  if (state.story.longitude != null &&
-                      state.story.latitude != null)
-                    _buildLocation(state),
+                  if (state.story.latitude != null &&
+                      state.story.longitude != null)
+                    _buildMapLocation(state),
                 ],
               ),
             );
@@ -54,43 +56,40 @@ class _DetailPageState extends State<DetailPage> {
   }
 
   Widget _buildStoryImage(DetailStorySuccess state) {
-    Widget buildImage() {
-      if (isImageNotFound) {
-        return Center(
-          child: Text(
-            'Image Not Found',
-            style: primaryTextStyle.copyWith(
-              fontSize: 18.sp,
-              fontWeight: bold,
-            ),
-          ),
-        );
-      }
+    return Container(
+      margin: EdgeInsets.only(top: 48.h),
+      height: 240.h,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(color: grayColor),
+      ),
+      child: _buildStoryImageContent(state),
+    );
+  }
 
-      return Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: NetworkImage(state.story.photoUrl),
-            onError: (exception, stackTrace) {
-              setState(() {
-                isImageNotFound = !isImageNotFound;
-              });
-            },
+  Widget _buildStoryImageContent(DetailStorySuccess state) {
+    if (isImageNotFound) {
+      return Center(
+        child: Text(
+          'Image Not Found',
+          style: primaryTextStyle.copyWith(
+            fontSize: 18.sp,
+            fontWeight: bold,
           ),
         ),
       );
     }
 
     return Container(
-      margin: EdgeInsets.only(top: 48.h),
-      height: 240.h,
-      width: double.infinity,
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12.r),
-          border: Border.all(
-            color: grayColor,
-          )),
-      child: buildImage(),
+        image: DecorationImage(
+          image: NetworkImage(state.story.photoUrl),
+          onError: (exception, stackTrace) {
+            setState(() => isImageNotFound = true);
+          },
+        ),
+      ),
     );
   }
 
@@ -131,27 +130,101 @@ class _DetailPageState extends State<DetailPage> {
     );
   }
 
-  Widget _buildLocation(DetailStorySuccess state) {
-    return Column(
-      children: [
-        SizedBox(
-          height: 12.h,
+  Widget _buildMapLocation(DetailStorySuccess state) {
+    final location = LatLng(state.story.latitude!, state.story.longitude!);
+
+    Future<void> onMapCreated(GoogleMapController controller) async {
+      final info = await geo.placemarkFromCoordinates(
+        location.latitude,
+        location.longitude,
+      );
+      final place = info[0];
+      final street = place.street!;
+      final address =
+          '${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
+
+      setState(() {
+        placemark = place;
+      });
+
+      final marker = Marker(
+        markerId: MarkerId(state.story.id),
+        position: location,
+        infoWindow: InfoWindow(
+          title: street,
+          snippet: address,
         ),
-        Text(
-          state.story.latitude.toString(),
-          style: primaryTextStyle.copyWith(
-            fontSize: 16.sp,
-            fontWeight: semiBold,
+      );
+      markers.add(marker);
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          margin: EdgeInsets.only(top: 12.h),
+          child: Text(
+            'Address',
+            style: primaryTextStyle.copyWith(
+              fontWeight: semiBold,
+              fontSize: 16.sp,
+            ),
           ),
         ),
-        SizedBox(
-          height: 12.h,
+        if (placemark != null) PlacemarkWidget(placemark: placemark!),
+        Container(
+          height: 240.h,
+          width: double.infinity,
+          margin: EdgeInsets.only(top: 12.h),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12.r),
+            border: Border.all(
+              color: grayColor,
+            ),
+          ),
+          child: GoogleMap(
+            onMapCreated: onMapCreated,
+            myLocationButtonEnabled: false,
+            zoomControlsEnabled: false,
+            mapToolbarEnabled: false,
+            zoomGesturesEnabled: false,
+            markers: markers.toSet(),
+            initialCameraPosition: CameraPosition(
+              target: location,
+              zoom: 18,
+            ),
+          ),
         ),
-        Text(
-          state.story.longitude.toString(),
-          style: primaryTextStyle.copyWith(
-            fontSize: 16.sp,
-            fontWeight: semiBold,
+      ],
+    );
+  }
+}
+
+class PlacemarkWidget extends StatelessWidget {
+  const PlacemarkWidget({
+    super.key,
+    required this.placemark,
+  });
+  final geo.Placemark placemark;
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                placemark.street!,
+                style: primaryTextStyle.copyWith(
+                    fontSize: 16, fontWeight: semiBold),
+              ),
+              Text(
+                '${placemark.subLocality}, ${placemark.locality}, ${placemark.postalCode}, ${placemark.country}',
+                style: primaryTextStyle.copyWith(
+                    fontSize: 16, fontWeight: semiBold),
+              ),
+            ],
           ),
         ),
       ],
