@@ -24,8 +24,6 @@ class StoryModel extends Equatable {
   factory StoryModel.fromJson(Map<String, dynamic> json) =>
       _$StoryModelFromJson(json);
 
-  Map<String, dynamic> toJson() => _$StoryModelToJson(this);
-
   @override
   List<Object?> get props => [id, name, description, photoUrl];
 }

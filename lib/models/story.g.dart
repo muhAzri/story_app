@@ -14,13 +14,3 @@ StoryModel _$StoryModelFromJson(Map<String, dynamic> json) => StoryModel(
       latitude: (json['lat'] as num?)?.toDouble(),
       longitude: (json['lon'] as num?)?.toDouble(),
     );
-
-Map<String, dynamic> _$StoryModelToJson(StoryModel instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'name': instance.name,
-      'description': instance.description,
-      'photoUrl': instance.photoUrl,
-      'lat': instance.latitude,
-      'lon': instance.longitude,
-    };

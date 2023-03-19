@@ -5,19 +5,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:story_app/bloc/story/story_bloc.dart';
 import 'package:story_app/common.dart';
+import 'package:go_router/go_router.dart';
 import 'package:story_app/models/form_models/add_story_form_model.dart';
 import 'package:story_app/shared/method.dart';
 import 'package:story_app/shared/theme.dart';
+import 'package:story_app/view/pages/select_location_page.dart';
 import 'package:story_app/view/widgets/buttons.dart';
 import 'package:story_app/view/widgets/forms.dart';
 
 class UploadStoryPage extends StatefulWidget {
+  final LatLng? latestLatLng;
+
   const UploadStoryPage({
     super.key,
+    this.latestLatLng,
   });
 
   @override
@@ -25,6 +30,7 @@ class UploadStoryPage extends StatefulWidget {
 }
 
 class _UploadStoryPageState extends State<UploadStoryPage> {
+  LatLng? latestLatLng;
   XFile? selectedImage;
   final TextEditingController descriptionController =
       TextEditingController(text: '');
@@ -175,6 +181,22 @@ class _UploadStoryPageState extends State<UploadStoryPage> {
               hintText: AppLocalizations.of(context)!.inputYourDescription,
               controller: descriptionController,
             ),
+            SizedBox(height: 12.h),
+            CustomTextButton(
+              title: 'Select Location',
+              onTap: () async {
+                final LatLng? result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SelectLocationPage(),
+                  ),
+                );
+
+                setState(() {
+                  latestLatLng = result;
+                });
+              },
+            ),
             _buildButton(),
           ],
         ),
@@ -190,13 +212,15 @@ class _UploadStoryPageState extends State<UploadStoryPage> {
         title: AppLocalizations.of(context)!.submit,
         onTap: () {
           if (validate()) {
+            final AddStoryFormModel formModel = AddStoryFormModel(
+              image: selectedImage!,
+              description: descriptionController.text,
+              lattitude: latestLatLng != null ? latestLatLng!.latitude : null,
+              longtitude: latestLatLng != null ? latestLatLng!.longitude : null,
+            );
+
             context.read<StoryBloc>().add(
-                  AddStoryEvent(
-                    AddStoryFormModel(
-                      selectedImage!,
-                      descriptionController.text,
-                    ),
-                  ),
+                  AddStoryEvent(formModel),
                 );
           } else {
             showCustomSnackbar(context, 'Semua Field Harus Terisi');

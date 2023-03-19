@@ -8,11 +8,17 @@ part 'add_story_form_model.g.dart';
 class AddStoryFormModel extends Equatable {
   final XFile image;
   final String description;
+  final double? lattitude;
+  final double? longtitude;
 
-  const AddStoryFormModel(this.image, this.description);
+  const AddStoryFormModel(
+      {required this.image,
+      required this.description,
+      this.lattitude,
+      this.longtitude});
 
   Map<String, dynamic> toJson() => _$AddStoryFormModelToJson(this);
 
   @override
-  List<Object?> get props => [image, description];
+  List<Object?> get props => [image, description, lattitude, longtitude];
 }

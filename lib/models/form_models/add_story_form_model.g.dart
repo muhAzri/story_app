@@ -10,4 +10,6 @@ Map<String, dynamic> _$AddStoryFormModelToJson(AddStoryFormModel instance) =>
     <String, dynamic>{
       'image': instance.image,
       'description': instance.description,
+      'lat': instance.lattitude,
+      'lon': instance.longtitude
     };

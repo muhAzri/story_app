@@ -12,6 +12,7 @@ import 'package:story_app/view/pages/authentication/sign_up_page.dart';
 import 'package:story_app/view/pages/detail_page.dart';
 import 'package:story_app/view/pages/main/main_page.dart';
 import 'package:story_app/view/pages/main/upload_story_page.dart';
+import 'package:story_app/view/pages/select_location_page.dart';
 import 'package:story_app/view/pages/splash_page.dart';
 
 void main() async {
@@ -72,7 +73,16 @@ class _MyAppState extends State<MyApp> {
                     ),
                     GoRoute(
                       path: '/upload-story',
+                      name: 'upload-story',
                       builder: (context, state) => const UploadStoryPage(),
+                      routes: [
+                        GoRoute(
+                          path: 'select-location',
+                          name: 'select-location',
+                          builder: (context, state) =>
+                              const SelectLocationPage(),
+                        ),
+                      ],
                     ),
                     GoRoute(
                       path: '/detail:storyId',
